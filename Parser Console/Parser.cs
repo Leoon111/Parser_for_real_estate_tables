@@ -32,11 +32,9 @@ namespace Parser_Console
             {
                 // Создаем поток для чтения.
                 var stream = File.Open(pathFilePrice, FileMode.Open, FileAccess.Read);
-                // В зависимости от расширения файла Excel, создаем тот или иной читатель.
-                // Читатель для файлов с расширением *.xlsx.
-                var excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+
                 // Читатель для файлов с расширением *.xls.
-                // var excelReader = ExcelReaderFactory.CreateBinaryReader(stream);
+                var excelReader = ExcelReaderFactory.CreateBinaryReader(stream);
                 // Читаем, получаем DataSet и работаем с ним как обычно.
                 var result = excelReader.AsDataSet();
                 // После завершения чтения освобождаем ресурсы.
@@ -80,6 +78,30 @@ namespace Parser_Console
                 //}
             }
 
+        }
+
+        public void ExcelXLSX(string pathFilePrice)
+        {
+            // todo добавить тест
+
+
+
+            // тест контроль
+            Console.WriteLine(File.Exists(pathFilePrice) ? "File exists." : "File does not exist.");
+
+            if (File.Exists(pathFilePrice))
+            {
+                // Создаем поток для чтения.
+                var stream = File.Open(pathFilePrice, FileMode.Open, FileAccess.Read);
+
+                // Читатель для файлов с расширением *.xlsx.
+                var excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+
+                // Читаем, получаем DataSet и работаем с ним как обычно.
+                var result = excelReader.AsDataSet();
+                // После завершения чтения освобождаем ресурсы.
+                excelReader.Close();
+            }
         }
     }
 }
