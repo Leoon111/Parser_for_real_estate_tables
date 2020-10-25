@@ -58,25 +58,36 @@ namespace Parser_Console
             Developer developer = new Developer(); 
             object[] cells = null;
             string startPrice = "Прайс-лист на квартиры от";
+            string startPrice1 = "Прайс-лист на квартиры на";
             bool startPriceToken = false;
             DateTime dateRelisePrice = default;
+            string cellString;
+            int numberAddressInDeveloper; // номер адреса(объекта для коллекции) у застройщика 
 
             // перебор всех строк таблицы
-            for (int i = 0; i < table.Rows.Count; i++)
+            for (int a = 0; a < table.Rows.Count; a++)
             {
                 // получаем все ячейки строки
-                cells = table.Rows[i].ItemArray;
-                foreach (object cell in cells)
+                cells = table.Rows[a].ItemArray;
+                for (int b = 0; b < cells.Length; b++)
                 {
+                    cellString = cells[b].ToString();
                     // находим строку, после которой начинается прайс с квартирами и присваиваем токену true
-                    if (!startPriceToken && cell.ToString().Contains(startPrice))
+                    if (!startPriceToken && cellString.Contains(startPrice))
                     {
                         Console.WriteLine("Найдена строка начала прайса");
                         startPriceToken = true;
-                        var dtStr = (cell.ToString().TrimStart(startPrice.ToCharArray())).TrimEnd(' ', 'г', '.');
+                        string dtStr = (cellString.TrimStart(startPrice.ToCharArray())).TrimEnd(' ', 'г', '.');
                         dateRelisePrice = Convert.ToDateTime(dtStr);
                         Console.WriteLine($"Дата прайса: {dateRelisePrice}");
-                        
+                    }
+                    if (!startPriceToken && cellString.Contains(startPrice1))
+                    {
+                        Console.WriteLine("Найдена строка начала прайса 2");
+                        startPriceToken = true;
+                        string dtStr = (cellString.TrimStart(startPrice.ToCharArray())).TrimEnd(' ', 'г', '.');
+                        dateRelisePrice = Convert.ToDateTime(dtStr);
+                        Console.WriteLine($"Дата прайса: {dateRelisePrice}");
                     }
 
                     if (startPriceToken)
@@ -97,10 +108,29 @@ namespace Parser_Console
                         // - квартира, но нужно взять тип квартиры из верхней ячейки
 
                         #endregion
+                        
+                        if (b == 0 && cellString.Length > 20)
+                        {
+                            // либо Адрес, либо Чистовая/Черновая, либо срок сдачи
 
+                            if (cellString.Contains("ул.") && cellString.Contains("д.") && !cellString.Contains(" можно "))
+                            {
+                                // это адрес, парсим его и вносим в данные
+
+                                int stAddress = cellString.IndexOf("ул. ");
+                                int endAddress = cellString.IndexOf("д.");
+                                int stHomeNumber = cellString.IndexOf("д.");
+                                int endHomeNumber = cellString.IndexOf("(");
+                                if (endHomeNumber < 0) endHomeNumber = cellString.IndexOf(", п");
+
+                                string address = cellString.Substring(stAddress + 4, endAddress - 5 - stAddress);
+                                string homeNumber = cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber);
+                            }
+                            
+                        }
                     }
 
-                    Console.Write("{0, 25}", cell);
+                    Console.Write("{0, 25}", cellString);
                 }
 
                 Console.WriteLine();

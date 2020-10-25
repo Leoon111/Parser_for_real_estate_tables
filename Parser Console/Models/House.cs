@@ -16,7 +16,7 @@ namespace Parser_Console.Models
         /// <summary>
         /// Адрес дома
         /// </summary>
-        public string Address { get; set; }
+        public HomeAddress Address { get; set; }
         /// <summary>
         /// Этажность дома
         /// </summary>
