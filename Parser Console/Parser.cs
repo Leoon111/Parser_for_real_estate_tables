@@ -37,23 +37,42 @@ namespace Parser_Console
                 // После завершения чтения освобождаем ресурсы.
                 excelReader.Close();
 
-                foreach (DataTable dt in result.Tables)
+                var tablesObject = result.Tables;
+                var table = tablesObject[5];
+                Console.WriteLine(table.TableName);
+
+
+                foreach (DataColumn column in table.Columns)
+                    Console.Write("{0, 25}", column.ColumnName);
+                    //Console.Write("\t{0}", column.ColumnName);
+                Console.WriteLine();
+                // перебор всех строк таблицы
+                foreach (DataRow row in table.Rows)
                 {
-                    Console.WriteLine(dt.TableName); // название таблицы
-                    // перебор всех столбцов
-                    foreach (DataColumn column in dt.Columns)
-                        Console.Write("\t{0}", column.ColumnName);
+                    // получаем все ячейки строки
+                    var cells = row.ItemArray;
+                    foreach (object cell in cells)
+                        Console.Write("{0, 25}", cell);
                     Console.WriteLine();
-                    // перебор всех строк таблицы
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        // получаем все ячейки строки
-                        var cells = row.ItemArray;
-                        foreach (object cell in cells)
-                            Console.Write("\t{0}", cell);
-                        Console.WriteLine();
-                    }
                 }
+
+                //foreach (DataTable dt in result.Tables)
+                //{
+                //    //Console.WriteLine(dt.TableName); // название таблицы
+                //    //// перебор всех столбцов
+                //    //foreach (DataColumn column in dt.Columns)
+                //    //    Console.Write("\t{0}", column.ColumnName);
+                //    //Console.WriteLine();
+                //    //// перебор всех строк таблицы
+                //    //foreach (DataRow row in dt.Rows)
+                //    //{
+                //    //    // получаем все ячейки строки
+                //    //    var cells = row.ItemArray;
+                //    //    foreach (object cell in cells)
+                //    //        Console.Write("\t{0}", cell);
+                //    //    Console.WriteLine();
+                //    //}
+                //}
             }
 
         }

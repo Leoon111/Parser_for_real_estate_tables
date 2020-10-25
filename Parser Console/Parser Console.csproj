@@ -24,4 +24,8 @@
     <Resource Include="Test Resources\ССК Прайс 2020.10.23.xls" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Base\" />
+  </ItemGroup>
+
 </Project>
