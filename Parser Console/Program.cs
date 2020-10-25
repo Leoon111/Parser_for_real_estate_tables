@@ -6,7 +6,11 @@ namespace Parser_Console
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            // открывает файл
+
+            // распарсивает по заданным алгоритмам
+
+            // возвращает данные
         }
     }
 }
