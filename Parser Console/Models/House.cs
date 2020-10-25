@@ -10,6 +10,10 @@ namespace Parser_Console.Models
     public class House
     {
         /// <summary>
+        /// Дата, когда были загружены данные в прайс
+        /// </summary>
+        public DateTime DataReleaseDate { get; set; }
+        /// <summary>
         /// Адрес дома
         /// </summary>
         public string Address { get; set; }
