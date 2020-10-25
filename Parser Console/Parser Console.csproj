@@ -6,4 +6,22 @@
     <RootNamespace>Parser_Console</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Test Resources\ССК Прайс 2020.10.23.xls" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Test Resources\ССК Прайс 2020.10.23.xls" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Test Resources\ССК Прайс 2020.10.23.xls" />
+  </ItemGroup>
+
 </Project>
