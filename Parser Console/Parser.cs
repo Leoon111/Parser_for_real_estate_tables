@@ -8,6 +8,13 @@ namespace Parser_Console
 {
     public class Parser
     {
+        public Parser()
+        {
+            // добавляем кодировку 1252 в Core
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            //var enc1252 = Encoding.GetEncoding(1252);
+        }
+
         /// <summary>
         /// Парсит файл .xls
         /// </summary>
@@ -16,9 +23,7 @@ namespace Parser_Console
         {
             // todo добавить тест
 
-            // добавляем кодировку 1252 в Core
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            //var enc1252 = Encoding.GetEncoding(1252);
+
 
             // тест контроль
             Console.WriteLine(File.Exists(pathFilePrice) ? "File exists." : "File does not exist.");
@@ -44,7 +49,7 @@ namespace Parser_Console
 
                 foreach (DataColumn column in table.Columns)
                     Console.Write("{0, 25}", column.ColumnName);
-                    //Console.Write("\t{0}", column.ColumnName);
+                //Console.Write("\t{0}", column.ColumnName);
                 Console.WriteLine();
                 // перебор всех строк таблицы
                 foreach (DataRow row in table.Rows)

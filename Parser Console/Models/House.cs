@@ -4,14 +4,26 @@ using System.Text;
 
 namespace Parser_Console.Models
 {
-    class House
+    /// <summary>
+    /// Дом
+    /// </summary>
+    public class House
     {
+        /// <summary>
+        /// Адрес дома
+        /// </summary>
         public string Address { get; set; }
-
+        /// <summary>
+        /// Этажность дома
+        /// </summary>
         public int NumberOfStoreys { get; set; }
-
+        /// <summary>
+        /// Тип стен дома
+        /// </summary>
         public string HouseWallType { get; set; }
-
-        public List<Apartment> Apartments { get; set; }
+        /// <summary>
+        /// Секции строительства
+        /// </summary>
+        public List<Section> SectionsList { get; set; }
     }
 }
