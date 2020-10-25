@@ -19,11 +19,12 @@ namespace Parser_Console
         /// Парсит файл .xls
         /// </summary>
         /// <param name="path">путь к файлу</param>
-        public void ExcelXLS(string pathFilePrice)
+        /// <returns>таблицы данных, полученные из файла, тиа DataSet</returns>
+        public DataSet ExcelXLS(string pathFilePrice)
         {
             // todo добавить тест
 
-
+            DataSet result = null;
 
             // тест контроль
             Console.WriteLine(File.Exists(pathFilePrice) ? "File exists." : "File does not exist.");
@@ -32,18 +33,16 @@ namespace Parser_Console
             {
                 // Создаем поток для чтения.
                 var stream = File.Open(pathFilePrice, FileMode.Open, FileAccess.Read);
-
                 // Читатель для файлов с расширением *.xls.
                 var excelReader = ExcelReaderFactory.CreateBinaryReader(stream);
                 // Читаем, получаем DataSet и работаем с ним как обычно.
-                var result = excelReader.AsDataSet();
+                result = excelReader.AsDataSet();
                 // После завершения чтения освобождаем ресурсы.
                 excelReader.Close();
 
                 var tablesObject = result.Tables;
                 var table = tablesObject[5];
                 Console.WriteLine(table.TableName);
-
 
                 foreach (DataColumn column in table.Columns)
                     Console.Write("{0, 25}", column.ColumnName);
@@ -77,15 +76,18 @@ namespace Parser_Console
                 //    //}
                 //}
             }
-
+            return result;
         }
-
-        public void ExcelXLSX(string pathFilePrice)
+        /// <summary>
+        /// Парсит файл .xlsx
+        /// </summary>
+        /// <param name="path">путь к файлу</param>
+        /// <returns>таблицы данных, полученные из файла, тиа DataSet</returns>
+        public DataSet ExcelXLSX(string pathFilePrice)
         {
             // todo добавить тест
 
-
-
+            DataSet result = null;
             // тест контроль
             Console.WriteLine(File.Exists(pathFilePrice) ? "File exists." : "File does not exist.");
 
@@ -93,15 +95,14 @@ namespace Parser_Console
             {
                 // Создаем поток для чтения.
                 var stream = File.Open(pathFilePrice, FileMode.Open, FileAccess.Read);
-
                 // Читатель для файлов с расширением *.xlsx.
                 var excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
-
                 // Читаем, получаем DataSet и работаем с ним как обычно.
-                var result = excelReader.AsDataSet();
+                result = excelReader.AsDataSet();
                 // После завершения чтения освобождаем ресурсы.
                 excelReader.Close();
             }
+            return result;
         }
     }
 }
