@@ -29,5 +29,9 @@ namespace Parser_Console.Models
         /// Секции строительства
         /// </summary>
         public List<Section> SectionsList { get; set; }
+        /// <summary>
+        /// Срок ввода в эксплуатацию секции
+        /// </summary>
+        public string CommissioningPeriod { get; set; }
     }
 }

@@ -35,7 +35,7 @@ namespace Parser_Console
                 var tablesObject = tableDataSet.Tables;
                 var table = tablesObject[5];
                 Console.WriteLine(table.TableName);
-                
+
                 // ТЕСТ вывод на консоль названий столбцов
                 foreach (DataColumn column in table.Columns)
                     Console.Write("{0, 25}", column.ColumnName);
@@ -43,7 +43,7 @@ namespace Parser_Console
 
                 Developer developerTable = ConvertToModel(table);
 
-                
+
             }
             //return result;
         }
@@ -55,10 +55,10 @@ namespace Parser_Console
         /// <returns></returns>
         private Developer ConvertToModel(DataTable table)
         {
-            Developer developer = new Developer(); 
+            Developer developer = new Developer();
             object[] cells = null;
-            string startPrice = "Прайс-лист на квартиры от";
-            string startPrice1 = "Прайс-лист на квартиры на";
+            string startPrice = "прайс-лист на квартиры от";
+            string startPrice1 = "прайс-лист на квартиры на";
             bool startPriceToken = false;
             DateTime dateRelisePrice = default;
             string cellString;
@@ -71,7 +71,7 @@ namespace Parser_Console
                 cells = table.Rows[a].ItemArray;
                 for (int b = 0; b < cells.Length; b++)
                 {
-                    cellString = cells[b].ToString();
+                    cellString = cells[b].ToString().ToLower();
                     // находим строку, после которой начинается прайс с квартирами и присваиваем токену true
                     if (!startPriceToken && cellString.Contains(startPrice))
                     {
@@ -108,10 +108,12 @@ namespace Parser_Console
                         // - квартира, но нужно взять тип квартиры из верхней ячейки
 
                         #endregion
-                        
+
                         if (b == 0 && cellString.Length > 20)
                         {
                             // либо Адрес, либо Чистовая/Черновая, либо срок сдачи
+
+                            #region Адрес дома
 
                             if (cellString.Contains("ул.") && cellString.Contains("д.") && !cellString.Contains(" можно "))
                             {
@@ -126,7 +128,37 @@ namespace Parser_Console
                                 string address = cellString.Substring(stAddress + 4, endAddress - 5 - stAddress);
                                 string homeNumber = cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber);
                             }
-                            
+
+                            #endregion
+
+                            #region Черновая или чистовая отделка
+
+                            if (cellString.Contains("чистовой"))
+                            {
+                                // квартиры в чистовой отделке
+
+                            }
+
+                            if (cellString.Contains("черновой"))
+                            {
+                                // квартиры в черновой отделке
+
+                            }
+
+                            #endregion
+
+                            if ((cellString.Contains("сдачи") || cellString.Contains("квартал")) 
+                                && (!cellString.Contains("остекление") || !cellString.Contains("лодж")))
+                            {
+                                // Распарсиваем строку, получаем срок сдачи.
+                                // в следующей строке указывается очередь строительства и подъезд
+
+                                int stCommissioningPeriod = cellString.IndexOf("сдачи") + 6;
+
+                                string commissioningPeriod = cellString.Substring(stCommissioningPeriod,
+                                    cellString.Length - stCommissioningPeriod);
+
+                            }
                         }
                     }
 

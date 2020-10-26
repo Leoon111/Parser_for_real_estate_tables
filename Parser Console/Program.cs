@@ -9,8 +9,8 @@ namespace Parser_Console
             Console.SetWindowSize(150, 50);
             // открывает файл // todo добавить автоматически выбор класса парсера по расширению файла
             Parser parser = new Parser();
-            parser.ExcelXLS(@"E:\OneDrive\РАБОТА\Риэлтор\Застройщики\ССК Прайс 2020.10.23.xls");
-            //parser.ExcelXLS(@"E:\OneDrive\РАБОТА\Риэлтор\Застройщики\Железно, квартиры 2020.10.23.xlsx");
+            parser.ExcelXLS(@"..\..\..\Test Resources\ССК Прайс 2020.10.23.xls");
+            //parser.ExcelXLS(@"..\..\..\Test Resources\Железно, квартиры 2020.10.26.xlsx");
 
             // распарсивает по заданным алгоритмам
 
