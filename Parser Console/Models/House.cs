@@ -26,9 +26,9 @@ namespace Parser_Console.Models
         /// </summary>
         public string HouseWallType { get; set; }
         /// <summary>
-        /// Секции строительства
+        /// Очередь строительства
         /// </summary>
-        public List<Section> SectionsList { get; set; }
+        public List<ConstructionPhase> ConstructionPhase { get; set; }
         /// <summary>
         /// Срок ввода в эксплуатацию секции
         /// </summary>

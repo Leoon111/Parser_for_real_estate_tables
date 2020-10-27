@@ -5,9 +5,9 @@ using System.Text;
 namespace Parser_Console.Models
 {
     /// <summary>
-    /// Секция строительства
+    /// Этап строительства
     /// </summary>
-    public class Section
+    public class ConstructionPhase
     {
         /// <summary>
         /// Номер секции строительства
@@ -26,7 +26,7 @@ namespace Parser_Console.Models
         /// </summary>
         public string HouseWallType { get; set; }
         /// <summary>
-        /// Количество подъездов в секции
+        /// Номера подъездов в секции
         /// </summary>
         public List<int> NumberOfPorchesHouseList { get; set; }
         /// <summary>

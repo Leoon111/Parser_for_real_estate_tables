@@ -57,8 +57,8 @@ namespace Parser_Console
         {
             Developer developer = new Developer();
             object[] cells = null;
-            string startPrice = "прайс-лист на квартиры от";
-            string startPrice1 = "прайс-лист на квартиры на";
+            const string startPrice = "прайс-лист на квартиры от";
+            const string startPrice1 = "прайс-лист на квартиры на";
             bool startPriceToken = false;
             DateTime dateRelisePrice = default;
             string cellString;
@@ -71,9 +71,9 @@ namespace Parser_Console
                 cells = table.Rows[a].ItemArray;
                 for (int b = 0; b < cells.Length; b++)
                 {
-                    cellString = cells[b].ToString().ToLower();
+                    cellString = cells[b].ToString()?.ToLower();
                     // находим строку, после которой начинается прайс с квартирами и присваиваем токену true
-                    if (!startPriceToken && cellString.Contains(startPrice))
+                    if (cellString != null && !startPriceToken && cellString.Contains(startPrice))
                     {
                         Console.WriteLine("Найдена строка начала прайса");
                         startPriceToken = true;
@@ -81,7 +81,7 @@ namespace Parser_Console
                         dateRelisePrice = Convert.ToDateTime(dtStr);
                         Console.WriteLine($"Дата прайса: {dateRelisePrice}");
                     }
-                    if (!startPriceToken && cellString.Contains(startPrice1))
+                    if (cellString != null && !startPriceToken && cellString.Contains(startPrice1))
                     {
                         Console.WriteLine("Найдена строка начала прайса 2");
                         startPriceToken = true;
@@ -109,7 +109,7 @@ namespace Parser_Console
 
                         #endregion
 
-                        if (b == 0 && cellString.Length > 20)
+                        if (cellString != null && b == 0 && cellString.Length > 20)
                         {
                             // либо Адрес, либо Чистовая/Черновая, либо срок сдачи
 
@@ -119,14 +119,24 @@ namespace Parser_Console
                             {
                                 // это адрес, парсим его и вносим в данные
 
-                                int stAddress = cellString.IndexOf("ул. ");
-                                int endAddress = cellString.IndexOf("д.");
-                                int stHomeNumber = cellString.IndexOf("д.");
-                                int endHomeNumber = cellString.IndexOf("(");
-                                if (endHomeNumber < 0) endHomeNumber = cellString.IndexOf(", п");
+                                int stAddress = cellString.IndexOf("ул. ", StringComparison.Ordinal);
+                                int endAddress = cellString.IndexOf("д.", StringComparison.Ordinal);
+                                int stHomeNumber = cellString.IndexOf("д.", StringComparison.Ordinal);
+                                int endHomeNumber = cellString.IndexOf("(", StringComparison.Ordinal);
+                                if (endHomeNumber < 0) endHomeNumber = cellString.IndexOf(", п", StringComparison.Ordinal);
 
-                                string address = cellString.Substring(stAddress + 4, endAddress - 5 - stAddress);
-                                string homeNumber = cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber);
+                                string address =
+                                    cellString.Substring(stAddress + 4, endAddress - 5 - stAddress)
+                                        .Trim(',', '.', ' ');
+
+                                // делаем первую букву большой
+                                char[] ch = address.ToCharArray();
+                                ch[0] = Convert.ToChar(ch[0].ToString().ToUpper());
+                                address = new string(ch);
+
+                                string homeNumber =
+                                    cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber)
+                                        .Trim(',', '.', ' ');
                             }
 
                             #endregion
@@ -147,17 +157,33 @@ namespace Parser_Console
 
                             #endregion
 
-                            if ((cellString.Contains("сдачи") || cellString.Contains("квартал")) 
+                            if ((cellString.Contains("сдачи") || cellString.Contains("квартал"))
                                 && (!cellString.Contains("остекление") || !cellString.Contains("лодж")))
                             {
                                 // Распарсиваем строку, получаем срок сдачи.
                                 // в следующей строке указывается очередь строительства и подъезд
 
-                                int stCommissioningPeriod = cellString.IndexOf("сдачи") + 6;
+                                #region Срок сдачи дома
 
+                                int stCommissioningPeriod = cellString.IndexOf("сдачи", StringComparison.Ordinal) + 6;
                                 string commissioningPeriod = cellString.Substring(stCommissioningPeriod,
                                     cellString.Length - stCommissioningPeriod);
+                                // если вместо единицы встретился символ I
+                                if (commissioningPeriod.Contains("i"))
+                                    commissioningPeriod = commissioningPeriod.Replace('i', '1');
 
+                                #endregion
+
+                                string nextCell = cells[b + 1].ToString()?.ToLower();
+                                int endConstructionPhase = nextCell.IndexOf("очере", StringComparison.Ordinal);
+                                string constructionPhase = 
+                                    nextCell.Substring(0, endConstructionPhase)
+                                        .Trim(',', '.', ' ');
+                                int stPorchesHouse = nextCell.IndexOf("ства", StringComparison.Ordinal) + 4;
+                                int endPorchesHouse = nextCell.IndexOf("подъ", StringComparison.Ordinal);
+                                string porchesHouse =
+                                    nextCell.Substring(stPorchesHouse, endPorchesHouse - stPorchesHouse)
+                                        .Trim(',', '.', ' ');
                             }
                         }
                     }
@@ -174,6 +200,7 @@ namespace Parser_Console
             //    
             //}
         }
+
 
         /// <summary>
         /// Получаем из файла данные в виде DataSet
@@ -200,7 +227,7 @@ namespace Parser_Console
         /// <summary>
         /// Парсит файл .xlsx
         /// </summary>
-        /// <param name="path">путь к файлу</param>
+        /// <param name="pathFilePrice">путь к файлу</param>
         public void ExcelXLSX(string pathFilePrice)
         {
             // todo добавить тест
@@ -222,5 +249,16 @@ namespace Parser_Console
             }
             //return result;
         }
+
+        /// <summary>
+        /// Убирает из строки запятые, точки и пробелы перед строкой и после строки
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        //private string ClearString(string st, char[] ch)
+        //{
+        //    string st1 = st.Trim(ch);
+        //    st1 = 
+        //}
     }
 }
