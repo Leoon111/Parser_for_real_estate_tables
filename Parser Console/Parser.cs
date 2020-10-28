@@ -75,19 +75,27 @@ namespace Parser_Console
                     // находим строку, после которой начинается прайс с квартирами и присваиваем токену true
                     if (cellString != null && !startPriceToken && cellString.Contains(startPrice))
                     {
-                        Console.WriteLine("Найдена строка начала прайса");
+#if DEBUG
+                        DataControlDuringDebugging.PrintConsoleColor("Найдена строка начала прайса");
+#endif
                         startPriceToken = true;
                         string dtStr = (cellString.TrimStart(startPrice.ToCharArray())).TrimEnd(' ', 'г', '.');
                         dateRelisePrice = Convert.ToDateTime(dtStr);
-                        Console.WriteLine($"Дата прайса: {dateRelisePrice}");
+#if DEBUG
+                        DataControlDuringDebugging.PrintConsoleColor($"Дата прайса: {dateRelisePrice}");
+#endif
                     }
                     if (cellString != null && !startPriceToken && cellString.Contains(startPrice1))
                     {
-                        Console.WriteLine("Найдена строка начала прайса 2");
+#if DEBUG
+                        DataControlDuringDebugging.PrintConsoleColor("Найдена строка начала прайса 2");
+#endif
                         startPriceToken = true;
                         string dtStr = (cellString.TrimStart(startPrice.ToCharArray())).TrimEnd(' ', 'г', '.');
                         dateRelisePrice = Convert.ToDateTime(dtStr);
-                        Console.WriteLine($"Дата прайса: {dateRelisePrice}");
+#if DEBUG
+                        DataControlDuringDebugging.PrintConsoleColor($"Дата прайса: {dateRelisePrice}");
+#endif
                     }
 
                     if (startPriceToken)
@@ -137,6 +145,8 @@ namespace Parser_Console
                                 string homeNumber =
                                     cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber)
                                         .Trim(',', '.', ' ');
+
+                                DataControlDuringDebugging.PrintConsoleColor($"ул. {address}, д. {homeNumber}");
                             }
 
                             #endregion
@@ -146,13 +156,16 @@ namespace Parser_Console
                             if (cellString.Contains("чистовой"))
                             {
                                 // квартиры в чистовой отделке
-
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor("Квартиры в черновой отделке:");
+#endif
                             }
-
                             if (cellString.Contains("черновой"))
                             {
                                 // квартиры в черновой отделке
-
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor("Квартиры в чистовой отделке:");
+#endif
                             }
 
                             #endregion
@@ -171,6 +184,9 @@ namespace Parser_Console
                                 // если вместо единицы встретился символ I
                                 if (commissioningPeriod.Contains("i"))
                                     commissioningPeriod = commissioningPeriod.Replace('i', '1');
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor($"Дом сдается {commissioningPeriod}");
+#endif
 
                                 #endregion
 
@@ -184,6 +200,9 @@ namespace Parser_Console
                                 string porchesHouse =
                                     nextCell.Substring(stPorchesHouse, endPorchesHouse - stPorchesHouse)
                                         .Trim(',', '.', ' ');
+
+                                DataControlDuringDebugging.PrintConsoleColor(
+                                    $"Очередь строительства {constructionPhase}, подъезд {porchesHouse}");
                             }
                         }
                     }
