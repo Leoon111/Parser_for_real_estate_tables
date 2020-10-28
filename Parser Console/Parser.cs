@@ -146,7 +146,9 @@ namespace Parser_Console
                                     cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber)
                                         .Trim(',', '.', ' ');
 
+#if DEBUG
                                 DataControlDuringDebugging.PrintConsoleColor($"ул. {address}, д. {homeNumber}");
+#endif
                             }
 
                             #endregion
@@ -175,7 +177,6 @@ namespace Parser_Console
                             {
                                 // Распарсиваем строку, получаем срок сдачи.
                                 // в следующей строке указывается очередь строительства и подъезд
-
                                 #region Срок сдачи дома
 
                                 int stCommissioningPeriod = cellString.IndexOf("сдачи", StringComparison.Ordinal) + 6;
@@ -189,6 +190,7 @@ namespace Parser_Console
 #endif
 
                                 #endregion
+                                #region Очередь строительства и подъезд
 
                                 string nextCell = cells[b + 1].ToString()?.ToLower();
                                 int endConstructionPhase = nextCell.IndexOf("очере", StringComparison.Ordinal);
@@ -200,9 +202,12 @@ namespace Parser_Console
                                 string porchesHouse =
                                     nextCell.Substring(stPorchesHouse, endPorchesHouse - stPorchesHouse)
                                         .Trim(',', '.', ' ');
-
+#if DEBUG
                                 DataControlDuringDebugging.PrintConsoleColor(
                                     $"Очередь строительства {constructionPhase}, подъезд {porchesHouse}");
+#endif
+
+                                #endregion
                             }
                         }
                     }
