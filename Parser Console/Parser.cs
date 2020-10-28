@@ -117,7 +117,7 @@ namespace Parser_Console
 
                         #endregion
 
-                        if (cellString != null && b == 0 && cellString.Length > 20)
+                        if (cellString != null && b == 0 && cellString.Length >= 20)
                         {
                             // либо Адрес, либо Чистовая/Черновая, либо срок сдачи
 
@@ -208,6 +208,52 @@ namespace Parser_Console
 #endif
 
                                 #endregion
+                            }
+                        }
+
+                        if (cellString != null && b == 0 && cellString.Length < 20)
+                        {
+                            // Если строка имеет мало символов
+                            // То это либо СДАН, либо тип квартиры, либо номер квартиры
+
+                            #region Номер квартиры
+
+                            if (cellString.Contains("№"))
+                            {
+                                int stApartmentNumber = -1;
+                                if (cellString.Contains("кв"))
+                                {
+                                    // если у нас встретилась вот такая запись: № кв. 607
+                                    stApartmentNumber = cellString.IndexOf("кв", StringComparison.Ordinal) + 2;
+                                }
+                                string apartmentNumber = (cellString.Substring(
+                                    stApartmentNumber == -1 ? 1 : (stApartmentNumber),
+                                    stApartmentNumber == -1 ? (cellString.Length - 1) : (cellString.Length - stApartmentNumber)))
+                                    .Trim(',', '.', ' ');
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor($"Номер квартиры {apartmentNumber}");
+#endif
+                            }
+
+                            #endregion
+
+                            #region Дом Сдан
+
+                            if (cellString.Contains("сдан"))
+                            {
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor("Дом сдан");
+#endif
+                            }
+
+                            #endregion
+
+                            if (cellString.Contains("комнатн"))
+                            {
+                                int apartmentType = Convert.ToInt32(cellString.Substring(0, 2));
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor($"Количество комнат {apartmentType}");
+#endif
                             }
                         }
                     }

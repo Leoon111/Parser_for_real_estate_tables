@@ -16,7 +16,7 @@ namespace Parser_Console.Models
         /// <summary>
         /// Тип квартиры (количество комнат)
         /// </summary>
-        public string ApartmentType { get; set; }
+        public int ApartmentType { get; set; }
         /// <summary>
         /// Тип отделки квартиры
         /// </summary>
