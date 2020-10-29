@@ -64,6 +64,15 @@ namespace Parser_Console
             string cellString;
             int numberAddressInDeveloper; // номер адреса(объекта для коллекции) у застройщика 
 
+            string commissioningPeriod;
+            string constructionPhase;
+            string address;
+            string homeNumber;
+            int porchesHouse;
+            int apartmentType;
+            string apartmentNumber;
+
+
             // перебор всех строк таблицы
             for (int a = 0; a < table.Rows.Count; a++)
             {
@@ -117,6 +126,7 @@ namespace Parser_Console
 
                         #endregion
 
+
                         if (cellString != null && b == 0 && cellString.Length >= 20)
                         {
                             // либо Адрес, либо Чистовая/Черновая, либо срок сдачи
@@ -133,18 +143,16 @@ namespace Parser_Console
                                 int endHomeNumber = cellString.IndexOf("(", StringComparison.Ordinal);
                                 if (endHomeNumber < 0) endHomeNumber = cellString.IndexOf(", п", StringComparison.Ordinal);
 
-                                string address =
-                                    cellString.Substring(stAddress + 4, endAddress - 5 - stAddress)
-                                        .Trim(',', '.', ' ');
+                                address = cellString.Substring(stAddress + 4, endAddress - 5 - stAddress)
+                                    .Trim(',', '.', ' ');
 
                                 // делаем первую букву большой
                                 char[] ch = address.ToCharArray();
                                 ch[0] = Convert.ToChar(ch[0].ToString().ToUpper());
                                 address = new string(ch);
 
-                                string homeNumber =
-                                    cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber)
-                                        .Trim(',', '.', ' ');
+                                homeNumber = cellString.Substring(stHomeNumber + 2, endHomeNumber - 2 - stHomeNumber)
+                                    .Trim(',', '.', ' ');
 
 #if DEBUG
                                 DataControlDuringDebugging.PrintConsoleColor($"ул. {address}, д. {homeNumber}");
@@ -180,7 +188,7 @@ namespace Parser_Console
                                 #region Срок сдачи дома
 
                                 int stCommissioningPeriod = cellString.IndexOf("сдачи", StringComparison.Ordinal) + 6;
-                                string commissioningPeriod = cellString.Substring(stCommissioningPeriod,
+                                commissioningPeriod = cellString.Substring(stCommissioningPeriod,
                                     cellString.Length - stCommissioningPeriod);
                                 // если вместо единицы встретился символ I
                                 if (commissioningPeriod.Contains("i"))
@@ -194,14 +202,13 @@ namespace Parser_Console
 
                                 string nextCell = cells[b + 1].ToString()?.ToLower();
                                 int endConstructionPhase = nextCell.IndexOf("очере", StringComparison.Ordinal);
-                                string constructionPhase = 
-                                    nextCell.Substring(0, endConstructionPhase)
-                                        .Trim(',', '.', ' ');
+                                constructionPhase = nextCell.Substring(0, endConstructionPhase)
+                                    .Trim(',', '.', ' ');
                                 int stPorchesHouse = nextCell.IndexOf("ства", StringComparison.Ordinal) + 4;
                                 int endPorchesHouse = nextCell.IndexOf("подъ", StringComparison.Ordinal);
-                                string porchesHouse =
+                                porchesHouse = Convert.ToInt32(
                                     nextCell.Substring(stPorchesHouse, endPorchesHouse - stPorchesHouse)
-                                        .Trim(',', '.', ' ');
+                                        .Trim(',', '.', ' '));
 #if DEBUG
                                 DataControlDuringDebugging.PrintConsoleColor(
                                     $"Очередь строительства {constructionPhase}, подъезд {porchesHouse}");
@@ -211,14 +218,14 @@ namespace Parser_Console
                             }
                         }
 
-                        if (cellString != null && b == 0 && cellString.Length < 20)
+                        if (cellString != null && cellString.Length < 20)
                         {
                             // Если строка имеет мало символов
-                            // То это либо СДАН, либо тип квартиры, либо номер квартиры
+                            // То это либо СДАН, либо тип квартиры, либо номер квартиры, либо подъезд
 
                             #region Номер квартиры
 
-                            if (cellString.Contains("№"))
+                            if (b == 0 && cellString.Contains("№"))
                             {
                                 int stApartmentNumber = -1;
                                 if (cellString.Contains("кв"))
@@ -226,10 +233,11 @@ namespace Parser_Console
                                     // если у нас встретилась вот такая запись: № кв. 607
                                     stApartmentNumber = cellString.IndexOf("кв", StringComparison.Ordinal) + 2;
                                 }
-                                string apartmentNumber = (cellString.Substring(
-                                    stApartmentNumber == -1 ? 1 : (stApartmentNumber),
-                                    stApartmentNumber == -1 ? (cellString.Length - 1) : (cellString.Length - stApartmentNumber)))
-                                    .Trim(',', '.', ' ');
+
+                                apartmentNumber = (cellString.Substring(
+                                        stApartmentNumber == -1 ? 1 : (stApartmentNumber),
+                                        stApartmentNumber == -1 ? (cellString.Length - 1) : (cellString.Length - stApartmentNumber)))
+                                        .Trim(',', '.', ' ');
 #if DEBUG
                                 DataControlDuringDebugging.PrintConsoleColor($"Номер квартиры {apartmentNumber}");
 #endif
@@ -239,22 +247,34 @@ namespace Parser_Console
 
                             #region Дом Сдан
 
-                            if (cellString.Contains("сдан"))
+                            if (b == 0 && cellString.Contains("сдан"))
                             {
+                                commissioningPeriod = "Дом сдан";
 #if DEBUG
-                                DataControlDuringDebugging.PrintConsoleColor("Дом сдан");
+                                DataControlDuringDebugging.PrintConsoleColor(commissioningPeriod);
 #endif
                             }
 
                             #endregion
 
-                            if (cellString.Contains("комнатн"))
+                            if (b == 0 && cellString.Contains("подъезд"))
                             {
-                                int apartmentType = Convert.ToInt32(cellString.Substring(0, 2));
+                                porchesHouse = Convert.ToInt32(cellString.Substring(0, 2));
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor($"Подъезд {porchesHouse}");
+#endif
+                            }
+
+                            if (b == 0 && cellString.Contains("комнатн"))
+                            {
+                                apartmentType = Convert.ToInt32(cellString.Substring(0, 2));
 #if DEBUG
                                 DataControlDuringDebugging.PrintConsoleColor($"Количество комнат {apartmentType}");
 #endif
+                                // распарсивае следующие ячейки в этой строке
                             }
+
+
                         }
                     }
 
