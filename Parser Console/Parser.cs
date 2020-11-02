@@ -64,6 +64,7 @@ namespace Parser_Console
             string cellString;
             int numberAddressInDeveloper; // номер адреса(объекта для коллекции) у застройщика 
 
+
             string commissioningPeriod;
             string constructionPhase;
             string address;
@@ -78,6 +79,9 @@ namespace Parser_Console
             {
                 // получаем все ячейки строки
                 cells = table.Rows[a].ItemArray;
+
+                // todo перебираем здесь все ячейки только для вывода на экран нераспарсенных данных с распарсенными.
+                // в дальнейшем убрать
                 for (int b = 0; b < cells.Length; b++)
                 {
                     cellString = cells[b].ToString()?.ToLower();
@@ -97,7 +101,7 @@ namespace Parser_Console
                     if (cellString != null && !startPriceToken && cellString.Contains(startPrice1))
                     {
 #if DEBUG
-                        DataControlDuringDebugging.PrintConsoleColor("Найдена строка начала прайса 2");
+                        DataControlDuringDebugging.PrintConsoleColor("Найдена строка 2 начала прайса");
 #endif
                         startPriceToken = true;
                         string dtStr = (cellString.TrimStart(startPrice.ToCharArray())).TrimEnd(' ', 'г', '.');
@@ -185,6 +189,7 @@ namespace Parser_Console
                             {
                                 // Распарсиваем строку, получаем срок сдачи.
                                 // в следующей строке указывается очередь строительства и подъезд
+
                                 #region Срок сдачи дома
 
                                 int stCommissioningPeriod = cellString.IndexOf("сдачи", StringComparison.Ordinal) + 6;
@@ -198,6 +203,7 @@ namespace Parser_Console
 #endif
 
                                 #endregion
+
                                 #region Очередь строительства и подъезд
 
                                 string nextCell = cells[b + 1].ToString()?.ToLower();
@@ -272,9 +278,27 @@ namespace Parser_Console
                                 DataControlDuringDebugging.PrintConsoleColor($"Количество комнат {apartmentType}");
 #endif
                                 // распарсивае следующие ячейки в этой строке
+                                // Перебираем все ячейки в этой строке
+                                for (int c = 1; c < cells.Length; c++)
+                                {
+
+                                }
                             }
 
 
+                        }
+
+                        var mmm = cells[1].ToString().Replace(',', '.');
+                        var mm = cells[1];
+                        // проверяем если ячейка пуста а вторая содержит цифру
+                        if (b == 0 && cells[0] is DBNull)
+                        {
+#if DEBUG
+                            var bo = cells[1] is double;
+                            var boo = cells[1].GetType();
+                            
+                            DataControlDuringDebugging.PrintConsoleColor($"В этой строке тоже квартира ");
+#endif
                         }
                     }
 
