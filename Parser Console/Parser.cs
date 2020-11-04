@@ -71,7 +71,7 @@ namespace Parser_Console
             string address;
             string homeNumber;
             int porchesHouse;
-            int apartmentType;
+            int apartmentType = -1;
             string apartmentNumber;
             // площадь квартиры
             float apartmentArea;
@@ -249,8 +249,18 @@ namespace Parser_Console
                                         stApartmentNumber == -1 ? (cellString.Length - 1) : (cellString.Length - stApartmentNumber)))
                                         .Trim(',', '.', ' ');
 #if DEBUG
-                                DataControlDuringDebugging.PrintConsoleColor($"Номер квартиры {apartmentNumber}");
+                                DataControlDuringDebugging.PrintConsoleColor($"Номер квартиры {apartmentNumber}", false, true, false);
 #endif
+                                // ячейка 2 - площадь (apartmentArea)
+                                if (regexApartmentArea.IsMatch(cells[1].ToString()))
+                                {
+                                    // test
+                                    // var bo = cells[1] is double;
+                                    apartmentArea = ApartmentAreaSecondCell(cells);
+#if DEBUG
+                                    DataControlDuringDebugging.PrintConsoleColor($"Площадь квартиры {apartmentArea}", false, false, true);
+#endif
+                                }
                             }
 
                             #endregion
@@ -288,30 +298,29 @@ namespace Parser_Console
                                 {
                                     // test
                                     var bo = cells[1] is double;
-
-                                    apartmentArea = cells[1] is double
-                                        ? Convert.ToSingle((double)cells[1])
-                                        : Convert.ToSingle(cells[1].ToString()?.Replace('.', ','));
-
+                                    apartmentArea = ApartmentAreaSecondCell(cells);
 #if DEBUG
-                                DataControlDuringDebugging.PrintConsoleColor($"Площадь квартиры {apartmentArea}", false, false, true);
+                                    DataControlDuringDebugging.PrintConsoleColor($"Площадь квартиры {apartmentArea}", false, false, true);
 #endif
                                 }
-                                
                             }
-
-
                         }
 
-                        
                         // проверяем если ячейка пуста а вторая содержит цифру
                         if (b == 0 && cells[0] is DBNull && regexApartmentArea.IsMatch(cells[1].ToString()))
                         {
                             // todo дублируется
 
+                            // ячейка 2 - площадь (apartmentArea)
+                            if (regexApartmentArea.IsMatch(cells[1].ToString()))
+                            {
+                                // test
+                                var bo = cells[1] is double;
+                                apartmentArea = ApartmentAreaSecondCell(cells);
 #if DEBUG
-                            DataControlDuringDebugging.PrintConsoleColor($"В этой строке тоже квартира ");
+                                DataControlDuringDebugging.PrintConsoleColor($"Количество комнат {apartmentType}, Площадь квартиры {apartmentArea}");
 #endif
+                            }
                         }
                     }
 
@@ -326,6 +335,21 @@ namespace Parser_Console
             //{
             //    
             //}
+        }
+
+        /// <summary>
+        /// Парсит 2ю ячейку с площадью квартир. Не важно запятая или точка разделяет знаки, убирает лишние знаки снаружи числа.
+        /// </summary>
+        /// <param name="cells">строка с ячейками, массив object</param>
+        /// <returns></returns>
+        private float ApartmentAreaSecondCell(object[] cells)
+        {
+            var apartmentArea = cells[1] is double
+                ? Convert.ToSingle((double)cells[1])
+                : Convert.ToSingle(cells[1].ToString()?
+                    .Trim(',', '.', ' ')
+                    .Replace('.', ','));
+            return apartmentArea;
         }
 
 

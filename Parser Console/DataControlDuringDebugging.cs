@@ -56,7 +56,7 @@ namespace Parser_Console
             {
                 Console.ForegroundColor = consoleColor;
                 if(stBreakLine) Console.WriteLine(breakLine);
-                Console.Write($" {str}");
+                Console.Write(stBreakLine ? $"{str}" : $" {str}");
                 if(endBreakLine) Console.WriteLine($" \n{breakLine}");
                 Console.ResetColor();
             }
