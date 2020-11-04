@@ -2,6 +2,7 @@
 using System.Data;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using ExcelDataReader;
 using Parser_Console.Models;
 
@@ -72,7 +73,10 @@ namespace Parser_Console
             int porchesHouse;
             int apartmentType;
             string apartmentNumber;
+            // площадь квартиры
+            float apartmentArea;
 
+            Regex regexApartmentArea = new Regex(@"\d+,\d");
 
             // перебор всех строк таблицы
             for (int a = 0; a < table.Rows.Count; a++)
@@ -271,32 +275,41 @@ namespace Parser_Console
 #endif
                             }
 
-                            if (b == 0 && cellString.Contains("комнатн"))
+                            if (b == 0 && cellString.Contains("комнат"))
                             {
                                 apartmentType = Convert.ToInt32(cellString.Substring(0, 2));
 #if DEBUG
-                                DataControlDuringDebugging.PrintConsoleColor($"Количество комнат {apartmentType}");
+                                DataControlDuringDebugging.PrintConsoleColor($"Количество комнат {apartmentType}", false, true, false);
 #endif
-                                // распарсивае следующие ячейки в этой строке
-                                // Перебираем все ячейки в этой строке
-                                for (int c = 1; c < cells.Length; c++)
-                                {
+                                // распарсивам следующие ячейки в этой строке
 
+                                // ячейка 2 - площадь (apartmentArea)
+                                if (regexApartmentArea.IsMatch(cells[1].ToString()))
+                                {
+                                    // test
+                                    var bo = cells[1] is double;
+
+                                    apartmentArea = cells[1] is double
+                                        ? Convert.ToSingle((double)cells[1])
+                                        : Convert.ToSingle(cells[1].ToString()?.Replace('.', ','));
+
+#if DEBUG
+                                DataControlDuringDebugging.PrintConsoleColor($"Площадь квартиры {apartmentArea}", false, false, true);
+#endif
                                 }
+                                
                             }
 
 
                         }
 
-                        var mmm = cells[1].ToString().Replace(',', '.');
-                        var mm = cells[1];
+                        
                         // проверяем если ячейка пуста а вторая содержит цифру
-                        if (b == 0 && cells[0] is DBNull)
+                        if (b == 0 && cells[0] is DBNull && regexApartmentArea.IsMatch(cells[1].ToString()))
                         {
+                            // todo дублируется
+
 #if DEBUG
-                            var bo = cells[1] is double;
-                            var boo = cells[1].GetType();
-                            
                             DataControlDuringDebugging.PrintConsoleColor($"В этой строке тоже квартира ");
 #endif
                         }
